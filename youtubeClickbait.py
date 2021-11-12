@@ -41,7 +41,7 @@ def main():
                         single_id(user_id, f, fd)
                     elif (option == 'print'):
                         fd_var = command[1]
-                        if(fd_var == 'videos_dict'):
+                        if(fd_var == 'ids'):
                             fd.print_dict_ids(fd)
                     elif (option == 'analysis'):
                         analysis_type = command[1]
