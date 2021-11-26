@@ -2,9 +2,14 @@
 # https://googleapis.github.io/google-api-python-client/docs/dyn/youtube_v3.htmlF
 # pip install google-api-python-client      suggested vitrual client usefrom api import api_key
 
+import googleapiclient.errors
 from api import api_key
 from fileData import Video
 from googleapiclient.discovery import build
+import string
+import random
+from PIL import Image
+import requests
 
 #add videos to the videos_dict
 def add_videos(response, fd):
@@ -44,7 +49,7 @@ def add_videos(response, fd):
 #add a single video to the video dict
 def add_video_single(response, fd):
     items = response.get("items")
-    print(type(items))
+    #print(type(items))
     video = items[0]
     id = video.get("id")
     if id not in fd.videos_dict:
@@ -68,8 +73,8 @@ def add_video_single(response, fd):
                     dislikeCount, favoriteCount, commentCount)
         fd.videos_dict[id] = v
         fd.new_videos.add(id)
-
-        return len(fd.new_videos)
+        
+        return 1
     else:
         return 0
 
@@ -81,6 +86,7 @@ def write_new_videos(f, fd):
     for id in fd.new_videos:
         v = fd.videos_dict[id]
         v.write_video(f)
+    fd.new_videos.clear()
         
 
 # limit of 10,000 request per day 
@@ -142,8 +148,15 @@ def single_id(given_id, f, fd):
     )
     response = request.execute()
     pageInfo = response.get("pageInfo")
-    if pageInfo.get("totalResults") > 0:
+    results = int(pageInfo.get("totalResults"))
+
+    if results > 0:
         num_new = add_video_single(response, fd)
+    
+    print("num_new: {}".format(num_new))
     if num_new > 0:
             write_new_videos(f, fd)
-    print("new videos added: " + str(num_new))
+    else:
+        fd.not_added[given_id] = 1
+        print("NOT ADDED")
+        print("video id: {}\n".format(given_id))     

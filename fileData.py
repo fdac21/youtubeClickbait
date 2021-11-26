@@ -1,24 +1,24 @@
-class FileData:
-    searchedTokens = set()
-    videos_dict = {}
-    new_videos = set()
-    new_tokens = set()
-    def __init__(self):
-        self.searchedTokens = set()
-        self.videos_dict = {}
-        self.new_videos = set()
-        self.new_tokens = set()
+import csv
 
+#all the file data is stored in this class
+class FileData:
+    def __init__(self):
+        self.searchedTokens = set()         #tokens that have been searched on
+        self.videos_dict = {}               #dictonary videos that are in data file
+        self.new_videos = set()             #new videos found that can be added to the file
+        self.new_tokens = set()             #new tokens that can be added to the file
+        self.not_added = {}                 #videos that were not added (no longer exist or privacy)
+        
+    #print all the video ids in the videos dictonary
     def print_dict_ids(self):
         for k, v in self.videos_dict.items():
             print("id: {}".format(k))
         print("videos_dict size: {}".format(len(self.videos_dict)))
 
-    def titles(id, self):
-        v = self.videos_dict[id]
-        return v.title
-            
+#stores all the info about a video
 class Video:
+
+    #constructor that creates video class - set up data
     def __init__(self, videoId, title, channelId, categoryId,
                 channelTitle, description, duration, viewCount,
                 likeCount, dislikeCount, favoriteCount,
@@ -36,6 +36,7 @@ class Video:
         self.favoriteCount = favoriteCount
         self.commentCount = commentCount
     
+    #prints all values of a video
     def print_video(self):
         print("id: " + self.videoId)
         print("title: " + self.title)
@@ -56,7 +57,9 @@ class Video:
         print("dislikeCount: " + self.dislikeCount)
         print("favoriteCount: " + self.favoriteCount)
         print("commentCount: " + self.commentCount)
+        print('\n')
 
+    #writes a video to the data file
     def write_video(self, f):
             f.write("id: "+ self.videoId + '\n')
             f.write("title: " + str(self.title) + '\n')
@@ -77,7 +80,7 @@ class Video:
             print("video title: {}\n".format(str(self.title)))
 
 
-
+#reads entire data file
 def read_file_data(f, fd):
     for line in f:
         line = line.strip()
@@ -107,6 +110,8 @@ def read_file_data(f, fd):
                 if descId == "description: \n":
                     description = ""
                     l = ""
+                    #read the description until this line is hit
+                    #this is so it can be multiple lines
                     while l != "-??end-of-description??-\n":
                         l = f.readline()
                         description += l    
@@ -117,10 +122,42 @@ def read_file_data(f, fd):
                 favoriteCount = f.readline().strip().split(": ", 1)
                 commentCount = f.readline().strip().split(": ", 1)
 
+                #set all the information into a video 
                 v = Video(videoId, title[1], channelId[1], categoryId[1], channelTitle[1],
                         description[1], duration[1], viewCount[1], likeCount[1] ,dislikeCount[1],
                         favoriteCount[1], commentCount[1])
                 #v.print_video()
-        
+                
+                #then put the video into the dictonary
                 if videoId not in fd.videos_dict:
                     fd.videos_dict[videoId] = v
+
+# Data from data set of Trending Youtube Videos
+# https://mitchelljolly.com/
+# https://www.kaggle.com/datasnaek/youtube-new?select=USvideos.csv
+# this doen't have to be run again. All the vidoes in this database have already been added
+def read_mj_file(f, mjfd):
+    reader = csv.reader(f)
+
+    headers = []
+    headers = next(reader)
+    for row in reader:
+        videoId = str(row[0])
+        title = str(row[2])
+        channelId = 'NA'
+        categoryId = str(row[4])
+        channelTitle = str(row[3])
+        description = str(row[15])
+        duration = 'NA'
+        viewCount = str(row[7])
+        likeCount = str(row[8])
+        dislikeCount = str(row[9])
+        favoriteCount = 'NA'
+        commentCount = str(row[10])
+
+        v = Video(videoId, title, channelId, categoryId, channelTitle,
+                        description, duration, viewCount, likeCount,
+                        dislikeCount, favoriteCount, commentCount)
+
+        if videoId not in mjfd.videos_dict:
+            mjfd.videos_dict[videoId] = v
