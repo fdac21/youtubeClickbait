@@ -8,7 +8,7 @@ def convertCsv(fd):
             writer = csv.writer(f)
             header = ['video_id', 'video_title' , 'click_bait' , 'channel_Id' , 'category_id' , 'channelTitle' ,
                     'description', 'duration' , 'view_count' , 'like_count' , 'view_like_ratio', 'dislike_count' ,
-                    'view_dislike_ratio', 'like_dislike_ratio', 'favorite_count', 'comment_count' 'comments_enabled',
+                    'view_dislike_ratio', 'like_dislike_ratio', 'favorite_count', 'comment_count',
                     'view_comment_ratio', 'hidden', 'comments_disabled']
             writer.writerow(header)
 
