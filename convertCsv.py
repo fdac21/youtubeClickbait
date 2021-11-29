@@ -1,5 +1,6 @@
 import csv
 import fileData
+import re
 
 def convertCsv(fd):
     try:
@@ -11,7 +12,11 @@ def convertCsv(fd):
                     'view_comment_ratio', 'hidden', 'comments_disabled']
             writer.writerow(header)
 
+            i = 0
+
             for k, val in fd.videos_dict.items():
+                if i >= 80000:
+                    break
                 video_id = fd.videos_dict[k].videoId
                 video_title = fd.videos_dict[k].title
                 click_bait = 0
@@ -20,6 +25,10 @@ def convertCsv(fd):
                 channel_title = fd.videos_dict[k].channelTitle
 
                 description = fd.videos_dict[k].description
+                description = description.replace('\n', ' ')
+                #print(description)
+
+
                 duration = fd.videos_dict[k].duration
                 hidden = 0
                 if fd.videos_dict[k].viewCount == 'None':
@@ -69,6 +78,7 @@ def convertCsv(fd):
                         view_comment_ratio, hidden, comments_disabled]
 
                 writer.writerow(data)
+                i = i + 1
 
     except IOError:
             print('Data file cant be opened')
