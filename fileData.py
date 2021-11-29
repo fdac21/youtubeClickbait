@@ -109,12 +109,14 @@ def read_file_data(f, fd):
                 descId = f.readline()
                 if descId == "description: \n":
                     description = ""
-                    l = ""
+                    l = f.readline()
                     #read the description until this line is hit
                     #this is so it can be multiple lines
                     while l != "-??end-of-description??-\n":
+                        description += l
                         l = f.readline()
-                        description += l    
+                        
+                #print(description)  
                 duration = f.readline().strip().split(": ", 1)
                 viewCount = f.readline().strip().split(": ", 1)
                 likeCount = f.readline().strip().split(": ", 1)
@@ -124,7 +126,7 @@ def read_file_data(f, fd):
 
                 #set all the information into a video 
                 v = Video(videoId, title[1], channelId[1], categoryId[1], channelTitle[1],
-                        description[1], duration[1], viewCount[1], likeCount[1] ,dislikeCount[1],
+                        description, duration[1], viewCount[1], likeCount[1] ,dislikeCount[1],
                         favoriteCount[1], commentCount[1])
                 #v.print_video()
                 
