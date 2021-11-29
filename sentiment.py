@@ -18,11 +18,7 @@ if __name__ == "__main__" :
     features = list(video_df.columns)
     
     title = video_df['video_title'],
-    likes = video_df['like_count'], 
-    dislikes = video_df['dislike_count'],
-    views = video_df['view_count'],
-    #comment_count = video_df['comment_count'], 
-    ldr = video_df['like_dislike_ratio']
+
 
     d1 = pd.DataFrame(video_df)
     neg = []
