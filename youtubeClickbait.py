@@ -4,6 +4,7 @@ from fileData import FileData
 from apiCalls import most_popular, single_id
 from textAnalysis import titleAnalysis, print_titles_dict, print_titles_option
 from otherDataSets import combine_mj
+from convertCsv import convertCsv
 
 
 def main():
@@ -76,6 +77,10 @@ def main():
                             combine_mj(f, fd, mjfd)
                         else:
                             print("not valid command")
+                    elif (option == 'convert'):
+                        con_type = command[1]
+                        if(con_type == 'csv'):
+                            convertCsv(fd)
                     else:
                         print("not valid command")
                 else:
