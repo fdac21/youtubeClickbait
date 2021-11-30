@@ -28,6 +28,11 @@ def main():
         'favorite_count': video_df['favorite_count'],
         'view_comment_ratio': video_df['view_comment_ratio'],
         'comments_disabled': video_df['comments_disabled'],
+        'neg': video_df['neg'],
+        'neu': video_df['neu'],
+        'pos': video_df['pos'],
+        'compound': video_df['compound'],
+        'hidden': video_df['hidden']
     })
     
     
@@ -39,6 +44,11 @@ def main():
     y_pred = decision_tree.predict(X_test)
     print(accuracy_score(y_test, y_pred))
     tree.plot_tree(decision_tree, feature_names=features, class_names=features)
+    plt.figure(figsize=(100,100))  
+    tree.plot_tree(decision_tree, feature_names = usable_df.columns, 
+             filled=True, fontsize=44, rounded = True)
+    plt.show()
+    plt.savefig('tree.png')
 
 
 if __name__ == '__main__':
