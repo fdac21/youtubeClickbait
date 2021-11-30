@@ -87,7 +87,7 @@ def main():
     #print(video_df['click_bait'])
 
     for j in range(0, 1):
-        X_train, X_test, y_train, y_test = train_test_split(usable_df.to_numpy(), video_df['click_bait'].to_numpy(), test_size=.1)
+        X_train, X_test, y_train, y_test = train_test_split(usable_df.to_numpy(), video_df['click_bait'].to_numpy(), test_size=.2)
         
         model = MLPClassifier()
         model.fit(X_train, y_train)
