@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 
 from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
 def encode_titles(titles)-> list:
     t_dict = {}
@@ -86,22 +86,22 @@ def main():
     
     #print(video_df['click_bait'])
 
-    for j in range(0, 1):
-        X_train, X_test, y_train, y_test = train_test_split(usable_df.to_numpy(), video_df['click_bait'].to_numpy(), test_size=.2)
-        
-        model = MLPClassifier()
-        model.fit(X_train, y_train)
-
-        y_pred = model.predict(X_test)
-        print('Acc: {0}'.format(accuracy_score(y_test, y_pred)))
-
-    '''
-    fig, axes = plt.subplots(1,1)
-    #axes = sns.pairplot(usable_df)
-    #axes = sns.heatmap(usable_df) 
-    plt.show()
-    '''
+    parameters = [{
+        'hidden_layer_sizes': [8, (8,4), (8,8)],
+        'activation': ['relu', 'tanh'],
+        'learning_rate': ['constant', 'adaptive'],
+        'learning_rate_init':[.001, .01, .1]
+    }]
     
+    X_train, X_test, y_train, y_test = train_test_split(usable_df.to_numpy(), video_df['click_bait'].to_numpy(), test_size=.2)
+    
+    model = GridSearchCV(MLPClassifier(), parameters, scoring='recall_macro')
+    model.fit(X_train, y_train)
+    print(model.best_params_)
+    y_pred = model.predict(X_test)
+    print('Acc: {0}'.format(accuracy_score(y_test, y_pred)))
+
+    print(classification_report(y_test, y_pred))
 
 if __name__ == '__main__':
     main()
